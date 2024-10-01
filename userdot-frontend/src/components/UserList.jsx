@@ -38,7 +38,7 @@ const UserList = () => {
   const handleSearch = debounce((value) => {
     setCurrentPage(1); 
     setSearchTerm(value); 
-  }, 300); 
+  },); 
 
   
   const onSearchTermChange = (e) => {
