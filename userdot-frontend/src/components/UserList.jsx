@@ -19,32 +19,31 @@ const UserList = () => {
   const navigate = useNavigate(); 
 
   useEffect(() => {
-    fetchUsers(); // Fetch users when page changes or searchTerm changes
-  }, [currentPage, searchTerm]); // Fetch users when page or search term changes
+    fetchUsers();
+  }, [currentPage, searchTerm]); 
 
   const fetchUsers = async () => {
     try {
-      setLoading(true); // Show loading while fetching
+      setLoading(true); 
       const response = await axios.get(`http://localhost:3000/users?page=${currentPage}&limit=${PAGE_SIZE}&query=${searchTerm}`);
       setUsers(response.data.users);
-      setTotalUsers(response.data.total); // Update total users
+      setTotalUsers(response.data.total);
     } catch (err) {
       setError(err.message);
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false); 
     }
   };
 
-  // Debounce edilmiş arama fonksiyonu
   const handleSearch = debounce((value) => {
-    setCurrentPage(1); // Arama yaparken sayfa numarasını sıfırla
-    setSearchTerm(value); // Arama terimini güncelle
-  }, 300); // Bekleme süresini 300ms'ye düşürdük
+    setCurrentPage(1); 
+    setSearchTerm(value); 
+  }, 300); 
 
-  // Arama çubuğundaki değişiklikleri dinle
+  
   const onSearchTermChange = (e) => {
     const value = e.target.value;
-    handleSearch(value); // Debounced search call
+    handleSearch(value); 
   };
 
   const showEditModal = (user) => {
@@ -63,7 +62,7 @@ const UserList = () => {
         try {
           await axios.delete(`http://localhost:3000/users/${userId}`);
           message.success('Kullanıcı başarıyla silindi!');
-          fetchUsers(); // Refresh the user list
+          fetchUsers(); 
         } catch (error) {
           message.error('Silme sırasında bir hata oluştu.');
         }
@@ -87,7 +86,7 @@ const UserList = () => {
       await axios.put(`http://localhost:3000/users/${editingUser.id}`, sanitizedValues);
       message.success('Kullanıcı başarıyla güncellendi!');
       handleCancel();
-      fetchUsers(); // Refresh the user list
+      fetchUsers(); 
     } catch (error) {
       console.error('Güncelleme hatası:', error.response ? error.response.data : error.message);
       message.error('Güncelleme sırasında bir hata oluştu.');
