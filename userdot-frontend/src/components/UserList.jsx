@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Table, Button, Modal, Form, Input, message, Card, Pagination } from 'antd'; 
+import { Table, Button, Modal, Form, Input, message, Card, Pagination, Spin } from 'antd'; 
 import { useNavigate } from 'react-router-dom'; 
 import { DeleteOutlined } from '@ant-design/icons'; 
 import debounce from 'lodash/debounce'; 
-import './UserList.css';
+import './UserList.css'; 
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
@@ -19,31 +19,32 @@ const UserList = () => {
   const navigate = useNavigate(); 
 
   useEffect(() => {
-    fetchUsers(); 
-  }, [currentPage]); 
+    fetchUsers(); // Fetch users when page changes or searchTerm changes
+  }, [currentPage, searchTerm]); // Fetch users when page or search term changes
 
   const fetchUsers = async () => {
     try {
-      setLoading(true);
+      setLoading(true); // Show loading while fetching
       const response = await axios.get(`http://localhost:3000/users?page=${currentPage}&limit=${PAGE_SIZE}&query=${searchTerm}`);
       setUsers(response.data.users);
-      setTotalUsers(response.data.total); 
+      setTotalUsers(response.data.total); // Update total users
     } catch (err) {
       setError(err.message);
     } finally {
-      setLoading(false);
+      setLoading(false); // Stop loading
     }
   };
 
-  const handleSearch = debounce(async (query) => {
-    setCurrentPage(1); 
-    await fetchUsers(); 
-  }, 2000); 
+  // Debounce edilmiş arama fonksiyonu
+  const handleSearch = debounce((value) => {
+    setCurrentPage(1); // Arama yaparken sayfa numarasını sıfırla
+    setSearchTerm(value); // Arama terimini güncelle
+  }, 300); // Bekleme süresini 300ms'ye düşürdük
 
+  // Arama çubuğundaki değişiklikleri dinle
   const onSearchTermChange = (e) => {
     const value = e.target.value;
-    setSearchTerm(value);
-    handleSearch(value); 
+    handleSearch(value); // Debounced search call
   };
 
   const showEditModal = (user) => {
@@ -62,7 +63,7 @@ const UserList = () => {
         try {
           await axios.delete(`http://localhost:3000/users/${userId}`);
           message.success('Kullanıcı başarıyla silindi!');
-          fetchUsers(); 
+          fetchUsers(); // Refresh the user list
         } catch (error) {
           message.error('Silme sırasında bir hata oluştu.');
         }
@@ -86,7 +87,7 @@ const UserList = () => {
       await axios.put(`http://localhost:3000/users/${editingUser.id}`, sanitizedValues);
       message.success('Kullanıcı başarıyla güncellendi!');
       handleCancel();
-      fetchUsers(); 
+      fetchUsers(); // Refresh the user list
     } catch (error) {
       console.error('Güncelleme hatası:', error.response ? error.response.data : error.message);
       message.error('Güncelleme sırasında bir hata oluştu.');
@@ -121,17 +122,14 @@ const UserList = () => {
     },
   ];
 
-  if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   const totalPages = Math.ceil(totalUsers / PAGE_SIZE); 
 
   return (
     <div className="user-list-container">
- <h2 style={{ fontSize: '28px', fontWeight: '600', textAlign: 'left', marginBottom: '16px', color: '#333' }}>
-    Kullanıcı Listesi
-  </h2>      
-  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
+      <h2>Kullanıcı Listesi</h2>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
         <Input 
           placeholder="Ara (Ad veya Soyad)"
           value={searchTerm}
@@ -149,23 +147,20 @@ const UserList = () => {
 
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <Card className="user-table-card" bordered={false} style={{ borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)', width: '100%' }}>
-          <Table dataSource={users} columns={columns} rowKey="id" pagination={false} /> {/* Disable built-in pagination */}
+          {loading ? <Spin /> : <Table dataSource={users} columns={columns} rowKey="id" pagination={false} />} {/* Disable built-in pagination */}
         </Card>
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px' }}>
-  <div>
-    <span>Toplam Kullanıcı: {totalUsers} | Toplam Sayfa: {totalPages}</span>
-  </div>
-  <Pagination
-    current={currentPage}
-    pageSize={PAGE_SIZE}
-    total={totalUsers}
-    onChange={(page) => setCurrentPage(page)} 
-    style={{ textAlign: 'right' }} 
-  />
-</div>
-
+        <span>Toplam Kullanıcı: {totalUsers} | Toplam Sayfa: {totalPages}</span>
+        <Pagination
+          current={currentPage}
+          pageSize={PAGE_SIZE}
+          total={totalUsers}
+          onChange={(page) => setCurrentPage(page)} 
+          style={{ textAlign: 'right' }} 
+        />
+      </div>
 
       <Modal
         title="Kullanıcıyı Düzenle"
