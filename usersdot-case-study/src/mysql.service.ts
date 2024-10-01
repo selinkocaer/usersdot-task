@@ -14,8 +14,8 @@ export class MySQLService implements OnModuleDestroy {
       this.pool = createPool({
         host: 'localhost',
         user: 'root',
-        password: 'Sk7212364.', // Your MySQL password
-        database: 'usersdot', // Ensure this is correct
+        password: 'Sk7212364.', 
+        database: 'usersdot',
         waitForConnections: true,
         connectionLimit: 10,
         queueLimit: 0,
@@ -43,6 +43,6 @@ export class MySQLService implements OnModuleDestroy {
   }
 
   onModuleDestroy() {
-    this.close(); // Cleanup connection on module destroy
+    this.close(); 
   }
 }

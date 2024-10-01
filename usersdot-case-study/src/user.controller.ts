@@ -6,17 +6,15 @@ import { User } from './user.interface';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  // Tüm kullanıcıları listele (pagination ve arama desteği ile)
   @Get()
   async findAll(
-    @Query('page') page: number = 1, // Varsayılan değer 1
-    @Query('limit') limit: number = 10, // Varsayılan limit 10
-    @Query('query') query?: string, // Opsiyonel arama terimi
+    @Query('page') page: number = 1, 
+    @Query('limit') limit: number = 10, 
+    @Query('query') query?: string, 
   ): Promise<{ users: User[]; total: number }> {
-    return this.userService.findAll(page, limit, query); // Servis metodunu çağır
+    return this.userService.findAll(page, limit, query); 
   }
 
-  // Belirli bir kullanıcıyı ID ile bul
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<User> {
     const user = await this.userService.findOne(parseInt(id, 10));
@@ -26,13 +24,11 @@ export class UserController {
     return user;
   }
 
-  // Yeni kullanıcı oluştur
   @Post()
   async create(@Body() user: User): Promise<User> {
     return this.userService.create(user);
   }
 
-  // Belirli bir kullanıcıyı güncelle
   @Put(':id')
   async update(@Param('id') id: string, @Body() user: User): Promise<User> {
     const updatedUser = await this.userService.update(parseInt(id, 10), user);
@@ -42,7 +38,6 @@ export class UserController {
     return updatedUser;
   }
 
-  // Belirli bir kullanıcıyı sil
   @Delete(':id')
   async delete(@Param('id') id: string): Promise<void> {
     const deleted = await this.userService.delete(parseInt(id, 10));

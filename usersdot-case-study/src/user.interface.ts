@@ -1,5 +1,5 @@
 export interface User {
-    id?: number; // Otomatik olarak eklenen ID
+    id?: number; 
     name: string;
     surname: string;
     email: string;
