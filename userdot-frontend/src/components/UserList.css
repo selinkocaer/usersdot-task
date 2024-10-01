@@ -1,0 +1,48 @@
+.user-list-container {
+    max-width: 900px; 
+    margin: 20px auto; 
+    padding: 20px; 
+  }
+  
+  .user-table-card {
+    background-color: #f7f7f7; 
+    border-radius: 8px; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  }
+  
+  .ant-table {
+    border-radius: 8px; 
+  }
+  
+  .ant-table-header {
+    background-color: #007bff; 
+    color: white; 
+  }
+  
+  .ant-table-tbody > tr:hover {
+    background-color: #e6f7ff; 
+  }
+  
+  .ant-table-tbody > tr:nth-child(odd) {
+    background-color: #f2f2f2; 
+  }
+  
+  .ant-table-tbody > tr:nth-child(even) {
+    background-color: #ffffff;
+  }
+  
+  .ant-input {
+    border: 1px solid #007bff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  }
+  
+  .ant-btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+  }
+  
+  .ant-btn-danger {
+    background-color: #ff4d4f;
+    border-color: #ff4d4f;
+  }
+  
